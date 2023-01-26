@@ -1,0 +1,34 @@
+# -- Makefile for PROXYARP.EXE
+
+ASM     =  tasm
+CC      =  bcc
+LINKER  =  tlink
+LIBRARY =  tlib
+LIB     =  pktdrv.lib
+OPTION  =  -1 -O -G -Z -d -w
+
+OBJ     =  proxyarp.obj config.obj
+
+
+all          :  proxyarp.exe pktdrv.lib
+clean        :
+                -del $(OBJ) $(LIB) proxyarp.exe pktdrv.obj
+
+proxyarp.exe :  $(OBJ) pktdrv.lib
+                $(CC) $(OPTION) -e$@ $**
+
+.c.obj       :
+                $(CC) -c $(OPTION) $<
+
+.cc.obj      :
+                $(CC) -c -P $(OPTION) $<
+
+.asm.obj     :
+                $(ASM) -ml -w2 $<;
+
+.obj.lib     :
+                $(LIBRARY) $@-+$<
+
+pktdrv.lib   :  pktdrv.obj
+                $(LIBRARY) /C $@ -+ $**
+
